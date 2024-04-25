@@ -10,7 +10,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { MoviesService } from './movies.service';
-import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
+import { CreateMovieDto, UpdateMovieDto } from '../movies/dto/movie.dto';
 
 @Controller('movies')
 export class MoviesController {

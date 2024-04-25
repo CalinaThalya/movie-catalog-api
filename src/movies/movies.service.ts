@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Movie } from 'typeorm/Movie';
-import { CreateMovieDto, UpdateMovieDto } from './dto/movie.dto';
+import { Movie } from '../movies/entities/movie.entity';
+import { CreateMovieDto, UpdateMovieDto } from '../movies/dto/movie.dto';
 
 @Injectable()
 export class MoviesService {
@@ -11,21 +11,24 @@ export class MoviesService {
     private readonly movieRepository: Repository<Movie>,
   ) {}
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<Movie[]> {
     return this.movieRepository.find();
   }
 
-  async findOne(id: number): Promise<any> {
-    return this.movieRepository.findOne(id);
+  async findOne(id: number): Promise<Movie | undefined> {
+    return this.movieRepository.findOne({ where: { id } });
   }
 
-  async create(createMovieDto: CreateMovieDto): Promise<any> {
+  async create(createMovieDto: CreateMovieDto): Promise<Movie> {
     const newMovie = this.movieRepository.create(createMovieDto);
     return this.movieRepository.save(newMovie);
   }
 
-  async update(id: number, updateMovieDto: UpdateMovieDto): Promise<any> {
-    const movie = await this.movieRepository.findOne(id);
+  async update(
+    id: number,
+    updateMovieDto: UpdateMovieDto,
+  ): Promise<Movie | null> {
+    const movie = await this.movieRepository.findOne({ where: { id } });
     if (!movie) {
       return null;
     }
@@ -34,7 +37,7 @@ export class MoviesService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const movie = await this.movieRepository.findOne(id);
+    const movie = await this.movieRepository.findOne({ where: { id } });
     if (!movie) {
       return false;
     }
